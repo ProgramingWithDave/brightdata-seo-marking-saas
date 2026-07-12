@@ -1,51 +1,109 @@
-# Welcome to your Convex + Next.js + Clerk app
+# Bright Data SEO Marking SaaS
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+An AI-powered SEO scoring and reporting platform. It pulls live, unblocked web data via **Bright Data**, runs it through an **AI analysis pipeline**, and turns the result into a scored, chart-driven SEO report — all served through a real-time **Next.js + Convex** app with **Clerk** authentication.
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+> This README describes the project based on its current codebase and structure. Update the sections below (screenshots, live links, exact scoring criteria) as the product evolves.
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Next.js](https://nextjs.org/) for optimized web hosting and page routing
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
-- [Clerk](https://clerk.com/) for authentication
+## What it does
 
-## Get started
+- **Fetches real web data** for a target site/keyword set using Bright Data (SERP results, page content, competitor signals) instead of relying on stale or self-reported data.
+- **Scores and "marks" SEO health** — on-page, technical, and competitive signals are analyzed by an LLM using structured prompts and turned into a report card / score.
+- **Generates AI-written reports** summarizing findings, strengths, weaknesses, and recommended fixes.
+- **Visualizes results** with interactive charts and dashboards (Recharts) so scores and trends are easy to read at a glance.
+- **Updates in real time** — report generation status and results stream to the UI live via Convex's reactive queries, no polling required.
+- **Gates access with auth** — users sign in with Clerk before running or viewing reports.
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js](https://nextjs.org/) (App Router) |
+| Backend / Database | [Convex](https://convex.dev/) (reactive backend-as-a-service) |
+| Auth | [Clerk](https://clerk.com/) |
+| Web data | [Bright Data](https://brightdata.com/) (SERP / Web Unlocker) |
+| AI | [Vercel AI SDK](https://sdk.vercel.ai/) + OpenAI |
+| UI | Tailwind CSS, Radix UI, shadcn-style components, Lucide icons |
+| Charts | [Recharts](https://recharts.org/) |
+| Validation | [Zod](https://zod.dev/) |
+
+## Project structure
 
 ```
+.
+├── actions/       # Server actions (data fetching, report generation, mutations)
+├── app/           # Next.js App Router pages, layouts, and API routes
+├── components/    # Reusable UI components
+├── convex/        # Convex schema, queries, mutations, and backend functions
+├── lib/           # Shared utilities and helpers
+├── prompts/       # AI prompt templates used for SEO analysis/scoring
+├── public/        # Static assets
+└── proxy.ts        # Bright Data proxy/request configuration
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- A [Convex](https://convex.dev/) account
+- A [Clerk](https://clerk.com/) account
+- A [Bright Data](https://brightdata.com/) account with an API token
+- An [OpenAI](https://platform.openai.com/) API key
+
+### Installation
+
+```bash
 npm install
+```
+
+### Environment variables
+
+Create a `.env.local` file in the project root:
+
+```bash
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# Convex
+NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
+
+# Bright Data
+BRIGHTDATA_API_TOKEN=your_brightdata_api_token
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+```
+
+> Check `convex/auth.config.ts` and `proxy.ts` for any additional variables your deployment expects — add them here as the project grows.
+
+### Run locally
+
+```bash
 npm run dev
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+This runs the Next.js frontend and the Convex dev backend in parallel. On first run, Convex will prompt you to log in and link a deployment.
 
+### Other scripts
+
+```bash
+npm run build   # Production build
+npm run start   # Start production server
+npm run lint    # Lint the codebase
 ```
-npm create convex@latest -- -t nextjs-clerk
-```
 
-Then:
+## Roadmap ideas
 
-1. Open your app. There should be a "Claim your application" button from Clerk in the bottom right of your app.
-2. Follow the steps to claim your application and link it to this app.
-3. Follow step 3 in the [Convex Clerk onboarding guide](https://docs.convex.dev/auth/clerk#get-started) to create a Convex JWT template.
-4. Uncomment the Clerk provider in `convex/auth.config.ts`
-5. Paste the Issuer URL as `CLERK_JWT_ISSUER_DOMAIN` to your dev deployment environment variable settings on the Convex dashboard (see [docs](https://docs.convex.dev/auth/clerk#configuring-dev-and-prod-instances))
+- [ ] Additional Bright Data sources beyond SERP (e.g. backlink or competitor datasets)
+- [ ] Historical score tracking / trend charts over time
+- [ ] Shareable/exportable report links
+- [ ] Team workspaces and billing
 
-If you want to sync Clerk user data via webhooks, check out this [example repo](https://github.com/thomasballinger/convex-clerk-users-table/).
+## Contributing
 
-## Learn more
+Issues and pull requests are welcome. Please open an issue to discuss significant changes before submitting a PR.
 
-To learn more about developing your project with Convex, check out:
+## License
 
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
-
-## Join the community
-
-Join thousands of developers building full-stack apps with Convex:
-
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+Add a license (e.g. MIT) here if you intend for others to reuse this code.
